@@ -30,3 +30,39 @@ SELECT hd
 FROM pc
 GROUP BY hd
 HAVING COUNT (pc.model)>=2
+
+Задание 16(2). Найдите пары моделей PC, имеющих одинаковые скорость и RAM. В результате каждая пара указывается только один раз, т.е. (i,j), но не (j,i), Порядок вывода: модель с большим номером, модель с меньшим номером, скорость и RAM.
+
+Решение: SELECT DISTINCT pc1.model, pc2.model, pc1.speed, pc1.ram
+FROM pc AS pc1, pc AS pc2
+WHERE pc1.speed=pc2.speed AND pc1.ram=pc2.ram AND
+pc1.model>pc2.model
+
+Задание17(2). Найдите модели ПК-блокнотов, скорость которых меньше скорости каждого из ПК. Вывести: type, model, speed.
+Решение: SELECT DISTINCT product.type, laptop.model, laptop.speed
+FROM laptop JOIN product ON laptop.model = product.model
+WHERE speed < (SELECT MIN(speed) FROM pc)
+
+Задание 18(2). Найдите производителей самых дешевых цветных принтеров. Вывести: maker, price
+Задание: SELECT DISTINCT product.maker, printer.price
+FROM product
+JOIN printer ON product.model = printer.model
+WHERE printer.color = 'y' AND printer.price =
+   (SELECT MIN(price)
+    FROM printer
+    WHERE color = 'y')
+
+Задание 19 (1). Для каждого производителя, имеющего модели в таблице Laptop, найдите средний размер экрана выпускаемых им ПК-блокнотов.
+Вывести: maker, средний размер экрана
+Решение: SELECT product.maker, AVG(laptop.screen)
+FROM product
+JOIN laptop ON product.model = laptop.model
+GROUP BY product.maker
+
+**Задание 20 (2).**Найдите производителей, выпускающих по меньшей мере три различных модели ПК. Вывести: Maker, число моделей ПК.
+Решение: SELECT maker,
+COUNT(model)
+FROM product
+WHERE type = 'PC'
+GROUP BY maker
+HAVING COUNT(model) >= 3
